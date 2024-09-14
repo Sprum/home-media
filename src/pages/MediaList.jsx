@@ -1,4 +1,6 @@
 import MediaCard from "../components/MediaCard.jsx";
+import useApi from "../api/api.js";
+import {useEffect, useState} from "react";
 
 const media = [
     {id: 1, path: "/somePic.jpg", type: "picture"},
@@ -9,11 +11,31 @@ const media = [
 ]
 
 export default function MediaList() {
+    const api = useApi()
+
+    const [files, setFiles] = useState([])
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    useEffect(() => {
+        const fetchFiles = async () => {
+            try {
+                const res = await api.get("/list");
+                setFiles(res.data); // Update state with the response data
+            } catch (e) {
+                console.error("Error fetching files:", e);
+                setError("Failed to fetch files."); // Handle errors
+            } finally {
+                setLoading(false); // Ensure loading state is updated
+            }
+        };
+
+        fetchFiles(); // Call the async function
+    }, [api]); // Include `api` in the dependency array if needed
     return (
-        <div className={"flex flex-col bg-teal-50 flex-grow items-center"}>
-            <h1 className={"font-bold text-xl text-teal-900  mt-4"}>Your media:</h1>
+        <div className={"flex flex-col bg-emerald-50 flex-grow items-center"}>
+            <h1 className={"font-bold text-xl text-emerald-900  mt-4"}>Your media:</h1>
             <div className={"flex flex-row gap-4 flex-wrap m-2"}>
-                {media.map((m) => (
+                {files.map((m) => (
                     <MediaCard mediaItem={m} key={m.id}/>
                 ))}
             </div>

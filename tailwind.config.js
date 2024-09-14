@@ -7,7 +7,7 @@ export default {
     theme: {
         extend: {
             boxShadow:{
-                'teal-sd': '0 4px 4px rgba(4, 47, 46, 0.6)'
+                'emerald-sd': '0 4px 4px rgba(4, 47, 46, 0.6)'
             }
         },
     },
