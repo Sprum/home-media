@@ -1,16 +1,32 @@
 import { useContext, useState } from 'react';
 import { ApiContext } from '../context/ApiContext';
-import {Link} from "react-router-dom"; // Ensure correct path
+import {Link} from "react-router-dom";
+import useApi from "../api/api.js"; // Ensure correct path
 
 export default function Index() {
-    const { baseUrl, setBaseUrl } = useContext(ApiContext);
+    const { baseUrl, setBaseUrl, connected, setConnected} = useContext(ApiContext);
     const [newUrl, setNewUrl] = useState('');
     const [changeUrl, setChangeUrl] = useState(false);
+    const api = useApi()
+
+    const pingServer = async ()=>{
+        try {
+            const res = await api.get("/ping")
+            if (res.data['connected']) {
+                setConnected(true)
+                console.log(connected)
+            }
+        } catch (e) {
+            setConnected(false)
+            console.log(e)
+        }
+    }
 
     const handleUrl = (e) => {
         e.preventDefault();
+
+        pingServer()
         setBaseUrl(newUrl);
-        setNewUrl('');
         setChangeUrl(false);
     };
 
@@ -56,6 +72,7 @@ export default function Index() {
                                     Set URL
                                 </button>
                             </form>
+                            {connected? <p>You are connected!</p>:<p>You are not Connected to the server.</p>}
                         </div>
                     )}
                 </div>
