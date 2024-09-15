@@ -3,11 +3,19 @@ import {ApiContext} from "./ApiContext.jsx";
 import useApi from "../api/api.js";
 
 
+const stripRoot = (path) =>{
+    if (path.startsWith('./')){
+        return path.slice(2)+'/'
+    }
+    return path
+}
+
 const FileContext = createContext([])
 
 const FileProvider = ({children}) => {
     const [files, setFiles] = useState([])
     const [folders, setFolders] = useState([])
+    const [root, setRoot] = useState([])
     const [loadingContents, setLoadingContents] = useState(false)
     const [fetchContentsError, setFetchContentsError] = useState('')
     const {connected} = useContext(ApiContext)
@@ -20,6 +28,7 @@ const FileProvider = ({children}) => {
             setLoadingContents(true)
             try {
                 const res = await api.get("/list")
+                setRoot(stripRoot(res.data['root'][0]))
                 setFiles(res.data['files'])
                 setFolders(res.data['folders'])
 
@@ -27,6 +36,7 @@ const FileProvider = ({children}) => {
                 setFetchContentsError(e)
             } finally {
                 setLoadingContents(false)
+                setFetchContentsError('')
             }
         }
         if (connected) {
@@ -43,7 +53,9 @@ const FileProvider = ({children}) => {
             loadingContents,
             setLoadingContents,
             fetchContentsError,
-            setFetchContentsError
+            setFetchContentsError,
+            root,
+            setRoot
         }}>
             {children}
         </FileContext.Provider>
