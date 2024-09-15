@@ -11,6 +11,8 @@ export default function MediaList() {
         return path.slice(root.length)
     }
 
+    // TODO: filter by folder and keep track of current dir
+
     return (
         <div className={"flex flex-col bg-emerald-50 flex-grow items-center"}>
             {loadingContents ?

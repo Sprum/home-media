@@ -16,7 +16,7 @@ export default function App() {
                         <Routes>
                             <Route path="/" element={<Index/>}/>
                             <Route path="/contents" element={<MediaList/>}/>
-                            <Route path={"/files"} element={<MediaDetail/>}/>
+                            <Route path={"/files/:fileId"} element={<MediaDetail/>}/>
                         </Routes>
                     </>
                 </Router>
