@@ -14,7 +14,6 @@ export default function Index() {
             const res = await api.get("/ping")
             if (res.data['connected']) {
                 setConnected(true)
-                console.log(connected)
             }
         } catch (e) {
             setConnected(false)

@@ -10,37 +10,45 @@ const stripRoot = (path) =>{
     return path
 }
 
-const FileContext = createContext([])
+const FileContext = createContext({});
 
-const FileProvider = ({children}) => {
-    const [files, setFiles] = useState([])
-    const [folders, setFolders] = useState([])
-    const [root, setRoot] = useState([])
-    const [loadingContents, setLoadingContents] = useState(false)
-    const [fetchContentsError, setFetchContentsError] = useState('')
-    const {connected} = useContext(ApiContext)
-    const api = useApi()
-
-
+const FileProvider = ({ children }) => {
+    const [files, setFiles] = useState([]); // Array of objects
+    const [folders, setFolders] = useState([]);
+    const [root, setRoot] = useState('');
+    const [loadingContents, setLoadingContents] = useState(false);
+    const [fetchContentsError, setFetchContentsError] = useState('');
+    const { connected } = useContext(ApiContext);
+    const api = useApi();
 
     useEffect(() => {
         const fetchContents = async () => {
-            setLoadingContents(true)
+            setLoadingContents(true);
             try {
-                const res = await api.get("/list")
-                setRoot(stripRoot(res.data['root'][0]))
-                setFiles(res.data['files'])
-                setFolders(res.data['folders'])
+                const res = await api.get("/list");
 
+                // Transform data into the desired structure
+                const filesWithMetadata = res.data['files'].map((filePath, idx) => ({
+                    id: idx,
+                    path: filePath,
+                    name: stripRoot(filePath),
+                    type: "file",
+                    thumbnail: null // Initialize thumbnail as null
+                }));
+
+                setRoot(stripRoot(res.data['root'][0]));
+                setFiles(filesWithMetadata);
+                setFolders(res.data['folders']);
             } catch (e) {
-                setFetchContentsError(e)
+                setFetchContentsError(e.message || 'An error occurred');
             } finally {
-                setLoadingContents(false)
-                setFetchContentsError('')
+                setLoadingContents(false);
+                setFetchContentsError('');
             }
-        }
+        };
+
         if (connected) {
-            fetchContents()
+            fetchContents();
         }
     }, [connected]);
 
@@ -59,7 +67,7 @@ const FileProvider = ({children}) => {
         }}>
             {children}
         </FileContext.Provider>
-    )
-}
+    );
+};
 
-export {FileContext, FileProvider}
+export { FileContext, FileProvider };

@@ -3,16 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import {FileContext} from '../context/FileContext.jsx';
 import useApi from '../api/api.js';
 
-const fileTypeMap = {
-    "mp4": "video",
-    "mp3": "audio",
-    "jpeg": "image",
-    "jpg": "image",
-    "png": "image",
-    "gif": "image",
-    "txt": "text",
-    "pdf": "pdf",
-};
+import {fileTypeMap} from '../util/util.js'
 
 export default function MediaDetail() {
     const {fileId} = useParams();
@@ -21,7 +12,7 @@ export default function MediaDetail() {
     const navigate = useNavigate()
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
-    const fileName = files[fileId];
+    const fileName = files[fileId].path;
     const fileSuffix = fileName.split(".").pop();
 
     const handleNext = () => {
@@ -51,8 +42,7 @@ export default function MediaDetail() {
             setLoading(false);
         }
     };
-    console.log(files)
-    console.log(files.length)
+
     useEffect(() => {
         fetchFile();
     }, [fileId]);
