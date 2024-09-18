@@ -3,7 +3,6 @@ import {useContext, useEffect, useState} from "react";
 import {FileContext} from "../context/FileContext.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import {filterMediaFromArray} from "../util/util.js";
-import useApi from "../api/api.js";
 import {ApiContext} from "../context/ApiContext.jsx";
 
 export default function MediaList() {
@@ -30,7 +29,7 @@ export default function MediaList() {
             const filesToGet = filterMediaFromArray(files);
             const ids = filesToGet.map(f => f.id);
             const body = JSON.stringify({fileIds: ids});
-
+            setIsReceivingThumbnails(true)
             try {
                 const res = await fetch(`${baseUrl}/api/v1/thumbnails`, {
                     method: "POST",
@@ -42,8 +41,6 @@ export default function MediaList() {
 
                 const reader = res.body.getReader();
                 const decoder = new TextDecoder();
-
-                let receivedLength = 0;
 
                 while (true) {
                     const {done, value} = await reader.read();
@@ -71,6 +68,9 @@ export default function MediaList() {
                 }
             } catch (e) {
                 console.log(e.message);
+            } finally {
+                setIsReceivingThumbnails(false)
+                setReceivedThumbnails(true)
             }
         };
 
