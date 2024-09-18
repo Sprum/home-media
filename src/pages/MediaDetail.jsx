@@ -4,6 +4,7 @@ import {FileContext} from '../context/FileContext.jsx';
 import useApi from '../api/api.js';
 
 import {fileTypeMap} from '../util/util.js'
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
 
 export default function MediaDetail() {
     const {fileId} = useParams();
@@ -60,7 +61,7 @@ export default function MediaDetail() {
             </div>
 
             {/* Media content */}
-            <div className="flex justify-center flex-grow">
+            {loading? <LoadingSpinner/> :<div className="flex justify-center flex-grow">
                 {fileTypeMap[fileSuffix] === "video" && (
                     <video controls>
                         <source src={file} type="video/mp4"/>
@@ -83,7 +84,7 @@ export default function MediaDetail() {
                     <iframe src={file} width="100%" height="600px"/>
                 )}
                 {!fileTypeMap[fileSuffix] && <div>Unsupported file type: {fileSuffix}</div>}
-            </div>
+            </div>}
 
             <div
                 className="flex opacity-20 hover:opacity-100 cursor-pointer hover:bg-stone-200 h-[100%] items-center"
