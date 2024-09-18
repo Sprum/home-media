@@ -13,7 +13,7 @@ export default function MediaDetail() {
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const fileName = files[fileId].path;
-    const fileSuffix = fileName.split(".").pop();
+    const fileSuffix = fileName.split(".").pop().toLowerCase();
 
     const handleNext = () => {
         if (Number(fileId) === files.length-1) {

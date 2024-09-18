@@ -1,15 +1,18 @@
-import { useContext, useState } from 'react';
-import { ApiContext } from '../context/ApiContext';
+import {useContext, useState} from 'react';
+import {ApiContext} from '../context/ApiContext';
 import {Link} from "react-router-dom";
 import useApi from "../api/api.js"; // Ensure correct path
 
 export default function Index() {
-    const { baseUrl, setBaseUrl, connected, setConnected} = useContext(ApiContext);
+    const {baseUrl, setBaseUrl, connected, setConnected} = useContext(ApiContext);
     const [newUrl, setNewUrl] = useState('');
     const [changeUrl, setChangeUrl] = useState(false);
+    const [isConnecting, setIsConnecting] = useState(false
+    )
     const api = useApi()
 
-    const pingServer = async ()=>{
+    const pingServer = async () => {
+        setIsConnecting(true)
         try {
             const res = await api.get("/ping")
             if (res.data['connected']) {
@@ -18,6 +21,8 @@ export default function Index() {
         } catch (e) {
             setConnected(false)
             console.log(e)
+        } finally {
+            setIsConnecting(false)
         }
     }
 
@@ -42,15 +47,35 @@ export default function Index() {
                         Settings:
                     </h1>
                     {!changeUrl ? (
-                        <div>
-                            <h3>Current URL in use:</h3>
-                            <p>{baseUrl || 'No URL set'}</p>
-                            <button
-                                onClick={() => setChangeUrl(true)}
-                                className="flex justify-center items-center bg-emerald-900 p-2 text-emerald-50 rounded-lg"
-                            >
-                                Change URL
-                            </button>
+                        <div className={"flex flex-row"}>
+                            <div className={"flex flex-col"}>
+                                <h3>Current URL in use:</h3>
+                                <p>{baseUrl || 'No URL set'}</p>
+                                <div className={"flex flex-col gap-2"}>
+                                    <button
+                                        onClick={() => setChangeUrl(true)}
+                                        className="flex justify-center items-center bg-emerald-900 p-2 text-emerald-50 rounded-lg"
+                                    >
+                                        Change URL
+                                    </button>
+                                    <button
+                                        onClick={pingServer}
+                                        className="flex justify-center items-center bg-emerald-900 p-2 text-emerald-50 rounded-lg"
+                                    >
+                                        Connect!
+                                    </button>
+                                </div>
+                            </div>
+                            <svg width="50" height="150" xmlns="http://www.w3.org/2000/svg">
+                                {/*Background Rectangle*/}
+                                <rect x="5" y="5" width="40" height="140" rx="10" ry="10" fill="black"/>
+                                {/*Red Light*/}
+                                <circle id="redLight" cx="25" cy="30" r="15" fill={connected?"gray" :"red"}/>
+                                {/*Yellow Light */}
+                                <circle id="yellowLight" cx="25" cy="75" r="15" fill={isConnecting? "yellow":"gray"}/>
+                                {/*Green Light*/}
+                                <circle id="greenLight" cx="25" cy="120" r="15" fill={connected? "green":"gray"}/>
+                            </svg>
                         </div>
                     ) : (
                         <div>
@@ -71,7 +96,7 @@ export default function Index() {
                                     Set URL
                                 </button>
                             </form>
-                            {connected? <p>You are connected!</p>:<p>You are not Connected to the server.</p>}
+                            {connected ? <p>You are connected!</p> : <p>You are not Connected to the server.</p>}
                         </div>
                     )}
                 </div>

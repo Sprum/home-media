@@ -89,21 +89,21 @@ export default function MediaList() {
                         <p>{root}</p>
                     </div>
                     <div><h1 className={"font-bold text-xl text-emerald-900  mt-4"}>Folders:</h1>
-                        <div className={"flex flex-row gap-4 flex-wrap m-2"}>
+                        {folders && (<div className={"flex flex-row gap-4 flex-wrap m-2"}>
                             {folders.map((f, idx) => {
                                 const folder = {id: idx, path: f, name: stripRoot(f), type: "folder"};
                                 return (<MediaCard mediaItem={folder} key={folder.id}/>)
                             })
                             }
-                        </div>
+                        </div>)}
                     </div>
 
                     <div><h1 className={"font-bold text-xl text-emerald-900  mt-4"}>Files:</h1>
-                        <div className={"flex flex-row gap-4 flex-wrap m-2"}>
+                        {files && (<div className={"flex flex-row gap-4 flex-wrap m-2"}>
                             {files.map((file) => {
                                 return (<MediaCard mediaItem={file} key={file.id}/>)
                             })}
-                        </div>
+                        </div>)}
                     </div>
                 </>
             }

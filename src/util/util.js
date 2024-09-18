@@ -20,7 +20,7 @@ export const filterMediaFromArray = (files) => {
     const mediaFiles = [];
     for (let i = 0; i < files.length; i++) { // Fixed iteration logic
         const fileName = files[i].path;
-        const fileSuffix = fileName.split(".").pop();
+        const fileSuffix = fileName.split(".").pop().toLowerCase();
         if (mediaFileTypes.includes(fileSuffix)) { // Fixed check to use 'includes'
             mediaFiles.push(files[i]);
         }
